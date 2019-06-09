@@ -10,7 +10,9 @@
     "egg": "^2.15.1",
     "egg-scripts": "^2.11.0",
     "egg-sequelize": "^5.0.0",
-    "mysql2": "^1.6.5"
+    "egg-validate": "^2.0.2",
+    "mysql2": "^1.6.5",
+    "uuidv4": "^4.0.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",

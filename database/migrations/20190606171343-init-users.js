@@ -79,9 +79,6 @@ module.exports = {
       birthday: {
         type: DATE,
       },
-      deathday: {
-        type: DATE,
-      },
     })
 
     await queryInterface.createTable('user_optional_info', {
@@ -123,14 +120,20 @@ module.exports = {
       },
     })
     await queryInterface.createTable('family_tree', {
-      node_id: {
-        type: INTEGER,
+      user_node_id: {
         primaryKey: true,
         allowNull: false,
         unique: true,
+        type: STRING(20),
+        references: {
+          model: 'user_name',
+          key: 'user_id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
       },
       parent_node_id: {
-        type: INTEGER,
+        type: STRING(20),
       },
       lft: {
         type: INTEGER,
@@ -139,63 +142,7 @@ module.exports = {
         type: INTEGER,
       },
     })
-    await queryInterface.createTable('user_node', {
-      user_id: {
-        type: STRING(20),
-        primaryKey: true,
-        allowNull: false,
-        references: {
-          model: 'user_name',
-          key: 'user_id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      },
-      node_id: {
-        type: INTEGER,
-        references: {
-          model: 'family_tree',
-          key: 'node_id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      }
-    })
-    await queryInterface.createTable('delete_event', {
-      event_id: {
-        type: INTEGER,
-        primaryKey: true,
-        allowNull: false,
-      },
-      passive_user_id: {
-        type: STRING(20),
-        primaryKey: true,
-        allowNull: false,
-        references: {
-          model: 'user_name',
-          key: 'user_id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      },
-      subject_user_id: {
-        type: STRING(20),
-        primaryKey: true,
-        allowNull: false,
-        references: {
-          model: 'user_name',
-          key: 'user_id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      },
-    })
     await queryInterface.createTable('insert_event', {
-      event_id: {
-        type: INTEGER,
-        primaryKey: true,
-        allowNull: false,
-      },
       passive_user_id: {
         type: STRING(20),
         primaryKey: true,
@@ -227,6 +174,7 @@ module.exports = {
         type: INTEGER,
         primaryKey: true,
         allowNull: false,
+        autoIncrement: true
       },
       user_id: {
         type: STRING(20),
@@ -249,6 +197,7 @@ module.exports = {
         type: INTEGER,
         primaryKey: true,
         allowNull: false,
+        autoIncrement: true
       },
       user_id: {
         type: STRING(20),
@@ -268,6 +217,7 @@ module.exports = {
         type: INTEGER,
         primaryKey: true,
         allowNull: false,
+        autoIncrement: true
       },
       attached_essay_id: {
         type: INTEGER,
@@ -291,6 +241,24 @@ module.exports = {
         type: STRING(120),
       }
     })
+    await queryInterface.createTable('user_login_state',{
+      user_id: {
+        type: STRING,
+        primaryKey: true,
+        allowNull: false,
+        references: {
+          model: 'user_name',
+          key: 'user_id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
+      },
+      skey: {
+        type: STRING,
+        primaryKey: true,
+        allowNull: false
+      }
+    })
   },
 
   down: async queryInterface => {
@@ -304,11 +272,10 @@ module.exports = {
     await queryInterface.dropTable('user_account_info')
     await queryInterface.dropTable('user_const_info')
     await queryInterface.dropTable('user_optional_info')
-    await queryInterface.dropTable('user_node')
     await queryInterface.dropTable('family_tree')
     await queryInterface.dropTable('insert_event')
-    await queryInterface.dropTable('delete_event')
     await queryInterface.dropTable('poster')
+    await queryInterface.dropTable('user_login_state')
     await queryInterface.dropTable('bbs_essay_comments')
     await queryInterface.dropTable('bbs_essay')
     await queryInterface.dropTable('user_name')

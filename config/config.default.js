@@ -16,7 +16,10 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1559840006525_8932'
 
   // add your middleware config here
-  config.middleware = []
+  config.middleware = [ 'errCatch' ]
+
+  // 关闭csrf防范
+  config.security = { csrf: { enable: false } }
 
   // 数据库配置
   config.sequelize = {
