@@ -51,7 +51,6 @@ class UserController extends Controller {
   async confirmReview() {
     const { ctx } = this
     ctx.validate({
-      subject_user_id: 'string',
       passive_user_id: 'string',
       relation: {
         convertType: 'int',
@@ -64,9 +63,9 @@ class UserController extends Controller {
         default: false
       }
     }, ctx.query)
-    const { subject_user_id, passive_user_id, confirm_state, relation } = ctx.query
-    await ctx.service.user.user.insertEventHandler(subject_user_id, passive_user_id, confirm_state, relation)
-    const result = await ctx.service.user.user.getReviewFromDb(subject_user_id)
+    const { passive_user_id, confirm_state, relation } = ctx.query
+    await ctx.service.user.user.insertEventHandler(ctx.user_id, passive_user_id, confirm_state, relation)
+    const result = await ctx.service.user.user.getReviewFromDb(ctx.user_id)
     ctx.body = result
   }
   async getTree() {
@@ -99,6 +98,7 @@ class UserController extends Controller {
     // 验证id是否存在
     await ctx.service.user.user.validateTreeId(ctx.query.delete_user_id)
     await ctx.service.user.user.deleteFromTree(ctx.query.delete_user_id)
+    ctx.body = '0'
   }
 }
 
