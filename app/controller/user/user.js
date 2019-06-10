@@ -35,9 +35,13 @@ class UserController extends Controller {
       password: 'string'
     }, ctx.request.body)
     const { user_id, password } = ctx.request.body
+    // 验证账号密码
     const skey = await ctx.service.user.user.validateAccount(user_id, password)
+    // 设置用户登陆态
     ctx.cookies.set('skey', skey)
-    ctx.body = '0'
+    // 返回用户权限给前端
+    const permission = await ctx.service.user.user.getPermission(user_id)
+    ctx.body = { permission }
   }
   async getReview() {
     const { ctx } = this
@@ -69,6 +73,32 @@ class UserController extends Controller {
     const { ctx } = this
     const node_list = await ctx.service.user.user.getTreeNodesFromDb()
     ctx.body = node_list
+  }
+  async insertByAdmin() {
+    const { ctx } = this
+    ctx.validate({
+      subject_user_id: 'string',
+      passive_user_id: 'string',
+      relation: {
+        convertType: 'int',
+        type: 'enum',
+        values: [ 1, 2 ]
+      }
+    }, ctx.query)
+    const { subject_user_id, passive_user_id, relation } = ctx.query
+    // 验证id是否存在
+    await ctx.service.user.user.validateTreeId(subject_user_id)
+    await ctx.service.user.user.insertIntoTree(subject_user_id, passive_user_id, relation)
+    ctx.body = '0'
+  }
+  async deleteByAdmin() {
+    const { ctx } = this
+    ctx.validate({
+      delete_user_id: 'string'
+    }, ctx.query)
+    // 验证id是否存在
+    await ctx.service.user.user.validateTreeId(ctx.query.delete_user_id)
+    await ctx.service.user.user.deleteFromTree(ctx.query.delete_user_id)
   }
 }
 

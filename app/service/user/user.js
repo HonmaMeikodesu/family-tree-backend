@@ -95,6 +95,24 @@ class UserService extends Service {
     }
     return tree
   }
+  async getPermission(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT permission FROM user_account_info WHERE user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    return result[0][0].permission
+  }
+  async deleteFromTree(user_id) {
+    const { ctx } = this
+    await ctx.app.model.query('CALL deleteNode(?)',
+      { replacements: [ user_id ] }
+    )
+  }
+  async validateTreeId(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT COUNT(*) FROM family_tree WHERE user_node_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    if (result[0][0]['COUNT(*)'] === 0) throw (new Error('家族树中不存在该用户id'))
+  }
 }
 
 module.exports = UserService
