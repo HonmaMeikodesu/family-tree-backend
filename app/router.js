@@ -9,5 +9,6 @@ module.exports = app => {
   router.get('/', controller.home.index)
   router.post('/register', controller.user.user.register)
   router.post('/login', controller.user.user.login)
-
+  router.get('/getReview', loginStateAuth, controller.user.user.getReview)
+  router.get('/reviewConfirm', loginStateAuth, controller.user.user.confirmReview)
 }

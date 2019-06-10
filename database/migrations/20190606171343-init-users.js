@@ -47,7 +47,7 @@ module.exports = {
         type: STRING(40),
       },
       id_card: {
-        type: STRING(20),
+        type: STRING(40),
         unique: true,
       },
       permission: {

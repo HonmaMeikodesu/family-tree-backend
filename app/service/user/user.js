@@ -4,7 +4,7 @@ const Service = require('egg').Service
 
 class UserService extends Service {
 
-  async validateNewUserInfo(user_id, verify_user_id) {
+  async validateNewUserInfo(user_id, verify_user_id, id_card) {
     const { ctx } = this
     // 检测数据库是否已存在该用户
     let result = await ctx.app.model.query('SELECT COUNT(*) FROM user_name WHERE user_id = ?',
@@ -14,6 +14,10 @@ class UserService extends Service {
     result = await ctx.app.model.query('SELECT COUNT(*) FROM user_name WHERE user_id = ?',
       { replacements: [ verify_user_id ], type: ctx.app.Sequelize.QueryTypes.SELECT })
     if (result[0]['COUNT(*)'] === 0) throw (new Error('审核人不存在'))
+    // 检测身份证正确性
+    result = await ctx.app.model.query('SELECT COUNT(*) FROM user_account_info WHERE id_card = ?',
+      { replacements: [ id_card ], type: ctx.app.Sequelize.QueryTypes.SELECT })
+    if (result[0]['COUNT(*)'] !== 0) throw (new Error('身份证输入有误'))
   }
 
   async creatNewUserInDb(user_id, password, name, secure_q, secure_a, id_card) {
@@ -38,6 +42,34 @@ class UserService extends Service {
     ctx.app.model.query('INSERT INTO user_login_state(user_id,skey) VALUES(?,?)',
       { replacements: [ user_id, skey ], type: ctx.app.Sequelize.INSERT })
     return skey
+  }
+  async getReviewFromDb(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT passive_user_id,relation FROM insert_event WHERE subject_user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    return result[0]
+  }
+  async insertEventHandler(subject_user_id, passive_user_id, confirm_state, relation) {
+    const { ctx } = this
+    // 不管审核员是否同意，都将从insert_event中删除这个事件
+    await ctx.app.model.query('DELETE FROM insert_event WHERE subject_user_id = ? AND passive_user_id = ?',
+      { replacements: [ subject_user_id, passive_user_id ], type: ctx.app.Sequelize.DELETE })
+    if (confirm_state) {
+      // 审核员同意新增成员请求
+      await this.insertIntoTree(subject_user_id, passive_user_id, relation)
+    }
+  }
+  async insertIntoTree(subject_user_id, passive_user_id, relation) {
+    const { ctx } = this
+    switch (relation) {
+      case 1 : await ctx.app.model.query('CALL insertByFather(?,?)',
+        { replacements: [ subject_user_id, passive_user_id ] })
+        break
+      case 2 : await ctx.app.model.query('CALL insertByBrother(?,?)',
+        { replacements: [ subject_user_id, passive_user_id ] })
+        break
+      default: throw (new Error('[在家族树中新增节点]发生未知错误'))
+    }
   }
 }
 
