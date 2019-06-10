@@ -123,7 +123,6 @@ module.exports = {
       user_node_id: {
         primaryKey: true,
         allowNull: false,
-        unique: true,
         type: STRING(20),
         references: {
           model: 'user_name',
@@ -136,9 +135,13 @@ module.exports = {
         type: STRING(20),
       },
       lft: {
+        primaryKey: true,
+        allowNull: false,
         type: INTEGER,
       },
       rgt: {
+        primaryKey: true,
+        allowNull: false,
         type: INTEGER,
       },
     })
