@@ -71,6 +71,30 @@ class UserService extends Service {
       default: throw (new Error('[在家族树中新增节点]发生未知错误'))
     }
   }
+  async getTreeNodesFromDb() {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT user_node_id AS id,parent_node_id AS parent_id,name FROM family_tree,user_name WHERE family_tree.user_node_id = user_name.user_id',
+      { type: ctx.app.Sequelize.SELECT })
+    const list = result[0]
+    // 组装数据
+    let node
+    const map = {}
+    const tree = []
+    let i
+    for (i = 0; i < list.length; i++) {
+      map[list[i].id] = list[i]
+      list[i].children = []
+    }
+    for (i = 0; i < list.length; i += 1) {
+      node = list[i]
+      if (node.parent_id !== '-1') {
+        map[node.parent_id].children.push(node)
+      } else {
+        tree.push(node)
+      }
+    }
+    return tree
+  }
 }
 
 module.exports = UserService

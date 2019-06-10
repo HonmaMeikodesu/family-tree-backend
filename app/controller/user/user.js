@@ -65,6 +65,11 @@ class UserController extends Controller {
     const result = await ctx.service.user.user.getReviewFromDb(subject_user_id)
     ctx.body = result
   }
+  async getTree() {
+    const { ctx } = this
+    const node_list = await ctx.service.user.user.getTreeNodesFromDb()
+    ctx.body = node_list
+  }
 }
 
 module.exports = UserController
