@@ -24,6 +24,8 @@ class UserService extends Service {
     const { ctx } = this
     ctx.app.model.query('INSERT INTO user_name(user_id,name) VALUES(?,?)',
       { replacements: [ user_id, name ], type: ctx.app.Sequelize.QueryTypes.INSERT })
+    ctx.app.model.query('INSERT INTO user_optional_info(user_id) VALUES(?)',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.QueryTypes.INSERT })
     ctx.app.model.query('INSERT INTO user_account_info(user_id,password,id_card,permission) VALUES(?,?,?,?)',
       { replacements: [ user_id, password, id_card, 1 ], type: ctx.app.Sequelize.QueryTypes.INSERT })
   }
@@ -118,29 +120,50 @@ class UserService extends Service {
     const result = await ctx.app.model.query('SELECT * FROM user_optional_info WHERE user_id = ?',
       { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
     const dbObj = result[0][0]
-    let newGender
-    // 性别是数字, 0||1以及 1||0的结果都是1
-    if (info.gender !== undefined) {
-      newGender = info.gender
-    } else {
-      newGender = dbObj.gender
+
+    const newObj = {}
+    for (const key in dbObj) {
+      if (info[key] === undefined) {
+        newObj[key] = dbObj[key]
+      } else {
+        newObj[key] = info[key]
+      }
     }
 
-    const newObj = {
-      home_location: info.home_location || dbObj.home_location,
-      work: info.work || dbObj.work,
-      work_location: info.work_location || dbObj.work_location,
-      tele: info.tele || dbObj.tele,
-      qq: info.qq || dbObj.qq,
-      email: info.email || dbObj.email,
-      interest: info.interest || dbObj.interest,
-      avatar: info.avatar || dbObj.avatar,
-      gender: newGender,
-      country: info.country || dbObj.country,
-      birthday: info.birthday || dbObj.birthday,
-    }
     await ctx.app.model.query('INSERT INTO user_optional_info(user_id,home_location,work,work_location,tele,qq,email,interest,avatar,gender,country,birthday) VALUES(:user_id,:home_location,:work,:work_location,:tele,:qq,:email,:interest,:avatar,:gender,:country,:birthday) ON DUPLICATE KEY UPDATE home_location = :home_location,work = :work,work_location = :work_location,tele = :tele,qq = :qq,email = :email,interest = :interest,avatar = :avatar, gender = :gender,country = :country,birthday = :birthday',
       { replacements: { ...newObj, user_id }, type: ctx.app.Sequelize.UPDATE })
+  }
+  async findUser(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT COUNT(*) FROM user_account_info WHERE user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    switch (result[0][0]['COUNT(*)']) {
+      case 0 : return false
+      case 1 : return true
+      default:
+        throw (new Error('未知错误'))
+    }
+  }
+  async getUserPermission(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT permission FROM user_account_info WHERE user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    switch (result[0][0].permission) {
+      case 2 : return false
+      case 1 : return true
+      default:
+        throw (new Error('未知错误'))
+    }
+  }
+  async offerAdmin(employee_id) {
+    const { ctx } = this
+    await ctx.app.model.query('UPDATE user_account_info SET permission = 2 WHERE user_id = ?',
+      { replacements: [ employee_id ], type: ctx.app.Sequelize.UPDATE })
+  }
+  async dismissAdmin(admin_id) {
+    const { ctx } = this
+    await ctx.app.model.query('UPDATE user_account_info SET permission = 1 WHERE user_id = ?',
+      { replacements: [ admin_id ], type: ctx.app.Sequelize.UPDATE })
   }
 }
 

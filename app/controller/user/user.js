@@ -123,6 +123,27 @@ class UserController extends Controller {
     await ctx.service.user.user.editUserInfoInDb(ctx.user_id, ctx.request.body)
     ctx.body = '0'
   }
+  async offerAdmin() {
+    const { ctx } = this
+    ctx.validate({
+      employee_id: 'string'
+    }, ctx.query)
+    const flag = await ctx.service.user.user.findUser(ctx.query.employee_id)
+    if (!flag) {
+      throw (new Error('不存在该名用户'))
+    }
+    const permission = await ctx.service.user.user.getUserPermission(ctx.query.employee_id)
+    if (!permission) {
+      throw (new Error('该用户已经是管理员'))
+    }
+    await ctx.service.user.user.offerAdmin(ctx.query.employee_id)
+    ctx.body = '0'
+  }
+  async dismissAdmin() {
+    const { ctx } = this
+    await ctx.service.user.user.dismissAdmin(ctx.user_id)
+    ctx.body = '0'
+  }
 }
 
 module.exports = UserController

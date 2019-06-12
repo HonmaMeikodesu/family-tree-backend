@@ -21,4 +21,6 @@ module.exports = app => {
   router.get('/api/insertByAdmin', loginStateAuth, userPermissionAuth, controller.user.user.insertByAdmin)
   router.get('/api/deleteByAdmin', loginStateAuth, userPermissionAuth, controller.user.user.deleteByAdmin)
   router.post('/api/editUserInfo', loginStateAuth, controller.user.user.editUserInfo)
+  router.get('/api/offerAdmin', loginStateAuth, userPermissionAuth, controller.user.user.offerAdmin)
+  router.get('/api/dismissAdmin',loginStateAuth, userPermissionAuth, controller.user.user.dismissAdmin)
 }
