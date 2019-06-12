@@ -113,6 +113,10 @@ class UserService extends Service {
       { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
     if (result[0][0]['COUNT(*)'] === 0) throw (new Error('家族树中不存在该用户id'))
   }
+  async editUserInfoInDb(info) {
+    const { ctx } = this
+    await ctx.app.model.query('UPDATE ')
+  }
 }
 
 module.exports = UserService

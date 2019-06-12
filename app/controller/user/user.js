@@ -100,6 +100,20 @@ class UserController extends Controller {
     await ctx.service.user.user.deleteFromTree(ctx.query.delete_user_id)
     ctx.body = '0'
   }
+  async editUserInfo() {
+    const { ctx } = this
+    ctx.validate({
+      work: 'string?',
+      home_location: 'string?',
+      work_location: 'string?',
+      tele: 'string?',
+      qq: 'string?',
+      email: 'string?',
+      interest: 'string?',
+      avatar: 'string?'
+    }, ctx.request.body)
+    await ctx.service.user.user.editUserInfoInDb(ctx.request.body)
+  }
 }
 
 module.exports = UserController

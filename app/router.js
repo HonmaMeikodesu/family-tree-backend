@@ -19,4 +19,5 @@ module.exports = app => {
   // todo 鉴权暂时交由前端处理，用户登陆后后端返回该用户的permission给前端
   router.get('/api/insertByAdmin', loginStateAuth, controller.user.user.insertByAdmin)
   router.get('/api/deleteByAdmin', loginStateAuth, controller.user.user.deleteByAdmin)
+  router.post('/api/editUserInfo', loginStateAuth, controller.user.user.editUserInfo)
 }
