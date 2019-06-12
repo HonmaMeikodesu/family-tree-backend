@@ -52,33 +52,6 @@ module.exports = {
       created_at: DATE,
       updated_at: DATE,
     })
-
-    await queryInterface.createTable('user_const_info', {
-      user_id: {
-        type: STRING(20),
-        primaryKey: true,
-        allowNull: false,
-        unique: true,
-        references: {
-          model: 'user_name',
-          key: 'user_id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      },
-      gender: {
-        type: TINYINT(1),
-      },
-      country: {
-        type: STRING(20),
-      },
-      birthday: {
-        type: DATEONLY,
-      },
-      created_at: DATE,
-      updated_at: DATE,
-    })
-
     await queryInterface.createTable('user_optional_info', {
       user_id: {
         type: STRING(20),
@@ -115,6 +88,15 @@ module.exports = {
       },
       avatar: {
         type: STRING(40),
+      },
+      gender: {
+        type: TINYINT(1),
+      },
+      country: {
+        type: STRING(20),
+      },
+      birthday: {
+        type: DATEONLY,
       },
       created_at: DATE,
       updated_at: DATE,
