@@ -9,7 +9,7 @@ module.exports = {
       Example:
       return queryInterface.createTable('users', { id: Sequelize.INTEGER });
     */
-    const { DATE, STRING, TINYINT, INTEGER } = Sequelize
+    const { DATE, DATEONLY, STRING, TINYINT, INTEGER } = Sequelize
     await queryInterface.createTable('user_name', {
       user_id: {
         type: STRING(20),
@@ -73,7 +73,7 @@ module.exports = {
         type: STRING(20),
       },
       birthday: {
-        type: DATE,
+        type: DATEONLY,
       },
       created_at: DATE,
       updated_at: DATE,

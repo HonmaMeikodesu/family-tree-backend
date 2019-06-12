@@ -110,7 +110,15 @@ class UserController extends Controller {
       qq: 'string?',
       email: 'string?',
       interest: 'string?',
-      avatar: 'string?'
+      avatar: 'string?',
+      gender: {
+        required: false,
+        convertType: 'int',
+        type: 'enum',
+        values: [ 0, 1 ]
+      },
+      country: 'string?',
+      birthday: 'date?'
     }, ctx.request.body)
     await ctx.service.user.user.editUserInfoInDb(ctx.request.body)
   }
