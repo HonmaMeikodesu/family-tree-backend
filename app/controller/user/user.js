@@ -144,6 +144,28 @@ class UserController extends Controller {
     await ctx.service.user.user.dismissAdmin(ctx.user_id)
     ctx.body = '0'
   }
+  async addPost() {
+    const { ctx } = this
+    ctx.validate({
+      poster_title: 'string',
+      poster_content: 'string',
+    }, ctx.request.body)
+    const { poster_title, poster_content } = ctx.request.body
+    await ctx.service.user.user.addPost(ctx.user_id, poster_title, poster_content)
+    ctx.body = '0'
+  }
+  async deletePost() {
+    const { ctx } = this
+    ctx.validate({
+      poster_id: {
+        convertType: 'int',
+        required: 'true',
+        type: 'int'
+      }
+    }, ctx.query)
+    await ctx.service.user.user.deletePost(ctx.user_id,ctx.query.poster_id)
+    ctx.body = '0'
+  }
 }
 
 module.exports = UserController

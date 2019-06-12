@@ -165,6 +165,17 @@ class UserService extends Service {
     await ctx.app.model.query('UPDATE user_account_info SET permission = 1 WHERE user_id = ?',
       { replacements: [ admin_id ], type: ctx.app.Sequelize.UPDATE })
   }
+  async addPost(user_id, title, content) {
+    const { ctx } = this
+    await ctx.app.model.query('INSERT INTO poster(user_id,poster_title,poster_content,created_at) VALUES(?,?,?,now())',
+      { replacements: [ user_id, title, content ], type: ctx.app.Sequelize.INSERT })
+  }
+  async deletePost(user_id, poster_id) {
+    // todo 加个删除失败的抛错（安全防范措施）
+    const { ctx } = this
+    await ctx.app.model.query('DELETE FROM poster WHERE poster_id = ? AND user_id = ?',
+      { replacements: [ poster_id, user_id ], type: ctx.app.Sequelize.DELETE })
+  }
 }
 
 module.exports = UserService
