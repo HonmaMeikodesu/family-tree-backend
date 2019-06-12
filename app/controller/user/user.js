@@ -120,7 +120,8 @@ class UserController extends Controller {
       country: 'string?',
       birthday: 'date?'
     }, ctx.request.body)
-    await ctx.service.user.user.editUserInfoInDb(ctx.request.body)
+    await ctx.service.user.user.editUserInfoInDb(ctx.user_id, ctx.request.body)
+    ctx.body = '0'
   }
 }
 

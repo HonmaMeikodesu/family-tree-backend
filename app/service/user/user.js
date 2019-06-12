@@ -113,9 +113,34 @@ class UserService extends Service {
       { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
     if (result[0][0]['COUNT(*)'] === 0) throw (new Error('家族树中不存在该用户id'))
   }
-  async editUserInfoInDb(info) {
+  async editUserInfoInDb(user_id, info) {
     const { ctx } = this
-    await ctx.app.model.query('UPDATE ')
+    const result = await ctx.app.model.query('SELECT * FROM user_optional_info WHERE user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    const dbObj = result[0][0]
+    let newGender
+    // 性别是数字, 0||1以及 1||0的结果都是1
+    if (info.gender !== undefined) {
+      newGender = info.gender
+    } else {
+      newGender = dbObj.gender
+    }
+
+    const newObj = {
+      home_location: info.home_location || dbObj.home_location,
+      work: info.work || dbObj.work,
+      work_location: info.work_location || dbObj.work_location,
+      tele: info.tele || dbObj.tele,
+      qq: info.qq || dbObj.qq,
+      email: info.email || dbObj.email,
+      interest: info.interest || dbObj.interest,
+      avatar: info.avatar || dbObj.avatar,
+      gender: newGender,
+      country: info.country || dbObj.country,
+      birthday: info.birthday || dbObj.birthday,
+    }
+    await ctx.app.model.query('INSERT INTO user_optional_info(user_id,home_location,work,work_location,tele,qq,email,interest,avatar,gender,country,birthday) VALUES(:user_id,:home_location,:work,:work_location,:tele,:qq,:email,:interest,:avatar,:gender,:country,:birthday) ON DUPLICATE KEY UPDATE home_location = :home_location,work = :work,work_location = :work_location,tele = :tele,qq = :qq,email = :email,interest = :interest,avatar = :avatar, gender = :gender,country = :country,birthday = :birthday',
+      { replacements: { ...newObj, user_id }, type: ctx.app.Sequelize.UPDATE })
   }
 }
 
