@@ -15,8 +15,6 @@
 | user_id              | 是       | string  |                       账号                       |
 | password             | 是       | string  |                       密码                       |
 | name                 | 是       | string  |                     真实姓名                     |
-| secure_q             | 是       | string  |                     密保问题                     |
-| secure_a             | 是       | string  |                     密保答案                     |
 | id_card              | 是       | string  |                     身份证号                     |
 | verify_user_id       | 是       | string  |                    审核人账号                    |
 | verify_user_relation | 是       | 1，2，3 | 与审核人关系（1：父子/母子 2：兄弟姐妹 3：夫妻） |

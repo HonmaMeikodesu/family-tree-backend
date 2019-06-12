@@ -20,12 +20,12 @@ class UserService extends Service {
     if (result[0]['COUNT(*)'] !== 0) throw (new Error('身份证输入有误'))
   }
 
-  async creatNewUserInDb(user_id, password, name, secure_q, secure_a, id_card) {
+  async creatNewUserInDb(user_id, password, name, id_card) {
     const { ctx } = this
     ctx.app.model.query('INSERT INTO user_name(user_id,name) VALUES(?,?)',
       { replacements: [ user_id, name ], type: ctx.app.Sequelize.QueryTypes.INSERT })
-    ctx.app.model.query('INSERT INTO user_account_info(user_id,password,secure_q,secure_a,id_card,permission) VALUES(?,?,?,?,?,?)',
-      { replacements: [ user_id, password, secure_q, secure_a, id_card, 1 ], type: ctx.app.Sequelize.QueryTypes.INSERT })
+    ctx.app.model.query('INSERT INTO user_account_info(user_id,password,id_card,permission) VALUES(?,?,?,?)',
+      { replacements: [ user_id, password, id_card, 1 ], type: ctx.app.Sequelize.QueryTypes.INSERT })
   }
 
   async newUserVerifyRequest(user_id, verify_user_id, verify_user_relation) {

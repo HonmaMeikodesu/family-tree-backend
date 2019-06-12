@@ -9,8 +9,6 @@ class UserController extends Controller {
       user_id: 'string',
       name: 'string',
       password: 'string',
-      secure_q: 'string',
-      secure_a: 'string',
       id_card: 'string',
       verify_user_id: 'string',
       verify_user_relation: {
@@ -19,11 +17,11 @@ class UserController extends Controller {
         values: [ 1, 2, 3 ]
       }
     }, ctx.request.body)
-    const { user_id, password, name, secure_q, secure_a, id_card, verify_user_id, verify_user_relation } = ctx.request.body
+    const { user_id, password, name, id_card, verify_user_id, verify_user_relation } = ctx.request.body
     // 检验输入正确性
     await ctx.service.user.user.validateNewUserInfo(user_id, verify_user_id, id_card)
     // 将注册用户信息存入数据库
-    await ctx.service.user.user.creatNewUserInDb(user_id, password, name, secure_q, secure_a, id_card)
+    await ctx.service.user.user.creatNewUserInDb(user_id, password, name, id_card)
     // 当不是夫妻关系时，向审核者发出审核请求，准备在家族树插入新成员
     if (verify_user_relation !== 3) { await ctx.service.user.user.newUserVerifyRequest(user_id, verify_user_id, verify_user_relation) }
     ctx.body = '0'
@@ -41,6 +39,8 @@ class UserController extends Controller {
     ctx.cookies.set('skey', skey)
     // 返回用户权限给前端
     const permission = await ctx.service.user.user.getPermission(user_id)
+    // 设置用户权限
+    ctx.cookies.set('permission', permission)
     ctx.body = { permission }
   }
   async getReview() {

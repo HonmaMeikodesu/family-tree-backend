@@ -22,7 +22,9 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
         unique: 'userandname'
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('user_account_info', {
       user_id: {
@@ -39,12 +41,6 @@ module.exports = {
       },
       password: {
         type: STRING(20),
-      },
-      secure_q: {
-        type: STRING(40),
-      },
-      secure_a: {
-        type: STRING(40),
       },
       id_card: {
         type: STRING(40),
@@ -79,6 +75,8 @@ module.exports = {
       birthday: {
         type: DATE,
       },
+      created_at: DATE,
+      updated_at: DATE,
     })
 
     await queryInterface.createTable('user_optional_info', {
@@ -118,6 +116,8 @@ module.exports = {
       avatar: {
         type: STRING(40),
       },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('family_tree', {
       user_node_id: {
@@ -144,6 +144,8 @@ module.exports = {
         allowNull: false,
         type: INTEGER,
       },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('insert_event', {
       passive_user_id: {
@@ -170,7 +172,9 @@ module.exports = {
       },
       relation: {
         type: INTEGER,
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('poster', {
       poster_id: {
@@ -193,7 +197,9 @@ module.exports = {
       },
       poster_content: {
         type: STRING(120),
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('bbs_essay', {
       essay_id: {
@@ -213,7 +219,9 @@ module.exports = {
       },
       essay_content: {
         type: STRING(120),
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
     await queryInterface.createTable('bbs_essay_comments', {
       comment_id: {
@@ -242,9 +250,11 @@ module.exports = {
       },
       comment_content: {
         type: STRING(120),
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
-    await queryInterface.createTable('user_login_state',{
+    await queryInterface.createTable('user_login_state', {
       user_id: {
         type: STRING,
         primaryKey: true,
@@ -260,7 +270,9 @@ module.exports = {
         type: STRING,
         primaryKey: true,
         allowNull: false
-      }
+      },
+      created_at: DATE,
+      updated_at: DATE,
     })
   },
 

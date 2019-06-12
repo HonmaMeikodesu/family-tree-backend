@@ -6,6 +6,7 @@
 module.exports = app => {
   const { router, controller } = app
   const loginStateAuth = app.middleware.loginStateAuth()
+  const userPermissionAuth = app.middleware.userPermissionAuth()
   router.get('/', controller.home.index)
   // 注册以及登录页面
   router.post('/api/register', controller.user.user.register)
@@ -17,7 +18,7 @@ module.exports = app => {
   router.get('/api/getTree', loginStateAuth, controller.user.user.getTree)
   // 后台管理界面
   // todo 鉴权暂时交由前端处理，用户登陆后后端返回该用户的permission给前端
-  router.get('/api/insertByAdmin', loginStateAuth, controller.user.user.insertByAdmin)
-  router.get('/api/deleteByAdmin', loginStateAuth, controller.user.user.deleteByAdmin)
+  router.get('/api/insertByAdmin', loginStateAuth, userPermissionAuth, controller.user.user.insertByAdmin)
+  router.get('/api/deleteByAdmin', loginStateAuth, userPermissionAuth, controller.user.user.deleteByAdmin)
   router.post('/api/editUserInfo', loginStateAuth, controller.user.user.editUserInfo)
 }
