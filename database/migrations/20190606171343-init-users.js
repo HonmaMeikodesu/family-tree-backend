@@ -70,7 +70,7 @@ module.exports = {
         type: TINYINT(1),
       },
       country: {
-        type: INTEGER,
+        type: STRING(20),
       },
       birthday: {
         type: DATE,
