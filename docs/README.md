@@ -46,6 +46,7 @@
 **响应**
 
 - 登录态cookies: `{ skey:"string"}`
+- 用户权限cookies: `{ permission: int }`// 1或者2
 
 ``` json
 {
@@ -183,6 +184,7 @@
 **传参列表**
 
 - 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
 
 | 参数名          | 是否必选 | 类型   | 说明                         |
 | --------------- | -------- | ------ | ---------------------------- |
@@ -207,12 +209,256 @@
 **传参列表**
 
 - 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
 
 **响应**
 
 ``` json
 0
 ```
+## 用户编辑个人信息
+
+**接口地址**        `/api/editUserInfo`
+
+**请求方式**        `POST`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| home_location | 否       | string |       居住地             |
+| work | 否       | string |            工作    |
+| work_location        | 否       | string   | 工作单位 |
+| tele        | 否       | string   | 电话 |
+| qq        | 否      | string   | qq |
+| email        | 否       | string   | 邮箱 |
+| interest        | 否       | string   | 爱好 |
+| avatar        | 否       | string   | 头像存放地址 |
+| gender        | 否       | 0，1   | 性别 |
+| country        | 否       | string   | 国籍 |
+| birthday        | 否       | datetime   | 生日 |
+
+**响应**
+``` json
+0
+```
+
+## 任命管理员
+
+**接口地址**        `/api/offerAdmin`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| employee_id | 是       | string |       被委任管理员的用户账号             |
+
+**响应**
+``` json
+0
+```
+
+## 卸任管理员
+
+**接口地址**        `/api/dismissAdmin`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
+
+**响应**
+``` json
+0
+```
+
+## 管理员发公告
+
+**接口地址**        `/api/addPost`
+
+**请求方式**        `POST`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| poster_title | 是       | string |       公告标题             |
+| poster_content | 是       | string |       公告正文             |
+
+**响应**
+``` json
+0
+```
+
+## 获取该名管理员发的所有公告（与删除公告接口配套使用）
+
+**接口地址**        `/api/showUserPostTitle`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
+
+**响应**
+
+``` json
+[
+    {
+        "poster_id": 3,
+        "poster_title": "顶顶顶顶",
+        "created_at": "2019-06-13T12:29:06.000Z"
+    },
+    {
+        "poster_id": 2,
+        "poster_title": "你好???",
+        "created_at": "2019-06-13T07:54:41.000Z"
+    }
+]
+```
+
+## 管理员删除公告
+
+**接口地址**        `/api/deletePost`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+- 管理员权限cookies： `{ permission: 2}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| poster_id | 是       | string |       公告id             |
+
+**响应**
+``` json
+0
+```
+
+**特殊说明** 
+一名管理员只能删除自己所发的公告而无法删除别人发的公告，假如一名管理员删除删除其他人的公告，虽然后端不会报错，但是实际上是失败的
+
+## 获取公告标题列表（在滚动栏中显示标题）
+
+**接口地址**        `/api/showPostTitle`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+
+**响应**
+``` json
+[
+    {
+        "poster_id": 3,
+        "poster_title": "顶顶顶顶"
+    },
+    {
+        "poster_id": 2,
+        "poster_title": "你好???"
+    }
+    // 按时间从新到旧排列，一次最多返回10条
+]
+```
+
+## 获取公告详情（用户在滚动栏中点击某条公告以后调用此接口）
+
+**接口地址**        `/api/getPostDetails`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| poster_id | 是       | string |       公告id             |
+
+
+**响应**
+
+``` json
+{
+    "poster_id": 2,
+    "user_id": "root",
+    "poster_title": "你好???",
+    "poster_content": "eqeeeeeee",
+    "created_at": "2019-06-13T07:54:41.000Z",
+    "updated_at": null
+}
+```
+
+## 通过身份证找回密码
+
+**说明**
+
+本接口的实质其实是<span style="color:red">输入身份证登录</span>
+因为输入了身份证后，就会直接返回该用户的登陆态
+
+**接口地址**        `/api/verifyIdCard`
+
+**请求方式**        `GET`
+
+**传参列表**
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| id_card | 是       | string |       身份证号             |
+
+
+**响应**
+
+- 登录态cookies: `{ skey:"string"}`
+- 用户权限cookies: `{ permission: int }`// 1或者2
+
+## 修改密码
+
+**注意**
+
+无论是`通过身份证找回密码`，还是`用户主动要求修改密码`，前端都应该将其统一导向此修改密码接口
+
+**接口地址**        `/api/editPassword`
+
+**请求方式**        `POST`
+
+**传参列表**
+
+- 登录态cookies: `{ skey:"string"}`
+
+| 参数名          | 是否必选 | 类型   | 说明                         |
+| --------------- | -------- | ------ | ---------------------------- |
+| password | 是       | string |       用户的新密码             |
+
+
+**响应**
+
+```json
+0
+```
+
+
+
+
+
+
 
 # 其他说明
 
