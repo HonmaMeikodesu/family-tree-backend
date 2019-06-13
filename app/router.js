@@ -25,4 +25,7 @@ module.exports = app => {
   router.get('/api/dismissAdmin', loginStateAuth, userPermissionAuth, controller.user.user.dismissAdmin)
   router.post('/api/addPost', loginStateAuth, userPermissionAuth, controller.user.user.addPost)
   router.get('/api/deletePost', loginStateAuth, userPermissionAuth, controller.user.user.deletePost)
+  router.get('/api/showPostTitle',loginStateAuth, controller.user.user.showPostTitle)
+  router.get('/api/getPostDetails', loginStateAuth, controller.user.user.getPostDetails)
+  router.get('/api/showUserPostTitle', loginStateAuth, userPermissionAuth, controller.user.user.getUserPost)
 }

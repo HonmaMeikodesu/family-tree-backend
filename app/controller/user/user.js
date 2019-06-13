@@ -163,8 +163,26 @@ class UserController extends Controller {
         type: 'int'
       }
     }, ctx.query)
-    await ctx.service.user.user.deletePost(ctx.user_id,ctx.query.poster_id)
+    await ctx.service.user.user.deletePost(ctx.user_id, ctx.query.poster_id)
     ctx.body = '0'
+  }
+  async showPostTitle() {
+    const { ctx } = this
+    const postList = await ctx.service.user.user.showPostTitle()
+    ctx.body = postList
+  }
+  async getPostDetails() {
+    const { ctx } = this
+    ctx.validate({
+      poster_id: 'string'
+    }, ctx.query)
+    const postDetails = await ctx.service.user.user.getPostDetails(ctx.query.poster_id)
+    ctx.body = postDetails
+  }
+  async getUserPost() {
+    const { ctx } = this
+    const userPostList = await ctx.service.user.user.showUserPostTitle(ctx.user_id)
+    ctx.body = userPostList
   }
 }
 

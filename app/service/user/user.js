@@ -176,6 +176,24 @@ class UserService extends Service {
     await ctx.app.model.query('DELETE FROM poster WHERE poster_id = ? AND user_id = ?',
       { replacements: [ poster_id, user_id ], type: ctx.app.Sequelize.DELETE })
   }
+  async showPostTitle() {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT poster_id,poster_title FROM poster ORDER BY created_at DESC LIMIT 10',
+      { type: ctx.app.Sequelize.SELECT })
+    return result[0]
+  }
+  async showUserPostTitle(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT poster_id,poster_title,created_at FROM poster WHERE user_id = ? ORDER BY created_at DESC',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    return result[0]
+  }
+  async getPostDetails(poster_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT * FROM poster WHERE poster_id = ?',
+      { replacements: [ poster_id ], type: ctx.app.Sequelize.SELECT })
+    return result[0][0]
+  }
 }
 
 module.exports = UserService
