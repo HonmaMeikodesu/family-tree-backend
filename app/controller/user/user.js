@@ -137,6 +137,7 @@ class UserController extends Controller {
       throw (new Error('该用户已经是管理员'))
     }
     await ctx.service.user.user.offerAdmin(ctx.query.employee_id)
+    ctx.cookies.set('permission', 2)
     ctx.body = '0'
   }
   async dismissAdmin() {
@@ -152,6 +153,7 @@ class UserController extends Controller {
     }, ctx.request.body)
     const { poster_title, poster_content } = ctx.request.body
     await ctx.service.user.user.addPost(ctx.user_id, poster_title, poster_content)
+    ctx.cookies.set('permission', 1)
     ctx.body = '0'
   }
   async deletePost() {
