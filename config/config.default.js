@@ -29,6 +29,7 @@ module.exports = appInfo => {
     database: 'egg_sequelize',
     username: 'root',
     password: '1234',
+    timezone: '+08:00' // 东八时区
   }
 
   // add your user config here
