@@ -190,7 +190,7 @@ class UserService extends Service {
   }
   async getPostDetails(poster_id) {
     const { ctx } = this
-    const result = await ctx.app.model.query('SELECT * FROM poster WHERE poster_id = ?',
+    const result = await ctx.app.model.query('SELECT poster_id,poster.user_id as \'user_id\',name,poster_title,poster_content,poster.created_at as \'created_at\' FROM poster LEFT JOIN user_name ON user_name.user_id = poster.user_id WHERE poster_id = ?',
       { replacements: [ poster_id ], type: ctx.app.Sequelize.SELECT })
     return result[0][0]
   }

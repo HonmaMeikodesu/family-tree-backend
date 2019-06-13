@@ -397,12 +397,12 @@
 
 ``` json
 {
-    "poster_id": 2,
+    "poster_id": 12,
     "user_id": "root",
+    "name": "123",
     "poster_title": "你好???",
-    "poster_content": "eqeeeeeee",
-    "created_at": "2019-06-13T07:54:41.000Z",
-    "updated_at": null
+    "poster_content": "eqeqeq",
+    "created_at": "2019-06-13T05:01:01.000Z"
 }
 ```
 
