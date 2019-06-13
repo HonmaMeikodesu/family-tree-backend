@@ -194,6 +194,30 @@ class UserService extends Service {
       { replacements: [ poster_id ], type: ctx.app.Sequelize.SELECT })
     return result[0][0]
   }
+  async verifyIdCard(id_card) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT COUNT(*) FROM user_account_info WHERE id_card = ?',
+      { replacements: [ id_card ], type: ctx.app.Sequelize.SELECT })
+    switch (result[0][0]['COUNT(*)']) {
+      case 0 : return false
+      case 1 : return true
+      default :
+        throw (new Error('未知错误'))
+    }
+  }
+  async getUserByIdCard(id_card) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT * FROM user_account_info WHERE id_card = ?',
+      { replacements: [ id_card ], type: ctx.app.Sequelize.SELECT })
+    const skey = await this.validateAccount(result[0][0].user_id, result[0][0].password)
+    const permission = await this.getPermission(result[0][0].user_id)
+    return { skey, permission }
+  }
+  async editPassword(user_id, password) {
+    const { ctx } = this
+    await ctx.app.model.query('UPDATE user_account_info SET password = ? WHERE user_id = ?',
+      { replacements: [ password, user_id ], type: ctx.app.Sequelize.UPDATE })
+  }
 }
 
 module.exports = UserService

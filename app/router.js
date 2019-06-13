@@ -28,4 +28,6 @@ module.exports = app => {
   router.get('/api/showPostTitle',loginStateAuth, controller.user.user.showPostTitle)
   router.get('/api/getPostDetails', loginStateAuth, controller.user.user.getPostDetails)
   router.get('/api/showUserPostTitle', loginStateAuth, userPermissionAuth, controller.user.user.getUserPost)
+  router.get('/api/verifyIdCard', controller.user.user.verifyIdCard)
+  router.post('/api/editPassword', loginStateAuth, controller.user.user.editPassword)
 }

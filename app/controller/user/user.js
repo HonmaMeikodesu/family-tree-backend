@@ -184,6 +184,26 @@ class UserController extends Controller {
     const userPostList = await ctx.service.user.user.showUserPostTitle(ctx.user_id)
     ctx.body = userPostList
   }
+  async verifyIdCard() {
+    const { ctx } = this
+    ctx.validate({
+      id_card: 'string'
+    }, ctx.query)
+    const flag = await ctx.service.user.user.verifyIdCard(ctx.query.id_card)
+    if (!flag) throw (new Error('找不到身份证对应的账号'))
+    const user = await ctx.service.user.user.getUserByIdCard(ctx.query.id_card)
+    ctx.cookies.set('skey', user.skey)
+    ctx.cookies.set('permission', user.permission)
+    ctx.body = '0'
+  }
+  async editPassword() {
+    const { ctx } = this
+    ctx.validate({
+      password: 'string'
+    }, ctx.request.body)
+    await ctx.service.user.user.editPassword(ctx.user_id, ctx.request.body.password)
+    ctx.body = '0'
+  }
 }
 
 module.exports = UserController
