@@ -143,6 +143,7 @@ class UserController extends Controller {
   async dismissAdmin() {
     const { ctx } = this
     await ctx.service.user.user.dismissAdmin(ctx.user_id)
+    ctx.cookies.set('permission', 1)
     ctx.body = '0'
   }
   async addPost() {
@@ -153,7 +154,6 @@ class UserController extends Controller {
     }, ctx.request.body)
     const { poster_title, poster_content } = ctx.request.body
     await ctx.service.user.user.addPost(ctx.user_id, poster_title, poster_content)
-    ctx.cookies.set('permission', 1)
     ctx.body = '0'
   }
   async deletePost() {
