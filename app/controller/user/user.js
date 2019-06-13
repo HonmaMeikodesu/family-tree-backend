@@ -137,7 +137,6 @@ class UserController extends Controller {
       throw (new Error('该用户已经是管理员'))
     }
     await ctx.service.user.user.offerAdmin(ctx.query.employee_id)
-    ctx.cookies.set('permission', 2)
     ctx.body = '0'
   }
   async dismissAdmin() {
