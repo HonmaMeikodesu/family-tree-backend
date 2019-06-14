@@ -220,7 +220,7 @@ class UserService extends Service {
   }
   async showUserInfo(user_id) {
     const { ctx } = this
-    const result = await ctx.app.model.query('SELECT * FROM user_optional_info,user_name WHERE user_name.user_id = ?',
+    const result = await ctx.app.model.query('SELECT * FROM user_optional_info,user_name WHERE user_name.user_id = user_account_info.user_id and user_name.user_id = ?',
       { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
     return result[0][0]
   }
