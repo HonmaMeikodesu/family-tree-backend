@@ -218,6 +218,12 @@ class UserService extends Service {
     await ctx.app.model.query('UPDATE user_account_info SET password = ? WHERE user_id = ?',
       { replacements: [ password, user_id ], type: ctx.app.Sequelize.UPDATE })
   }
+  async showUserInfo(user_id) {
+    const { ctx } = this
+    const result = await ctx.app.model.query('SELECT * FROM user_optional_info,user_name WHERE user_name.user_id = ?',
+      { replacements: [ user_id ], type: ctx.app.Sequelize.SELECT })
+    return result[0][0]
+  }
 }
 
 module.exports = UserService

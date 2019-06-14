@@ -205,6 +205,11 @@ class UserController extends Controller {
     await ctx.service.user.user.editPassword(ctx.user_id, ctx.request.body.password)
     ctx.body = '0'
   }
+  async showUserInfo() {
+    const { ctx } = this
+    const userInfo = await ctx.service.user.user.showUserInfo( ctx.user_id )
+    ctx.body = userInfo
+  }
 }
 
 module.exports = UserController
